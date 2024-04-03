@@ -1,9 +1,15 @@
 import { useEffect, useState } from "react";
 import { FeedMessage, VehiclePosition } from "../../../generated/gtfs-realtime";
 
+interface LiveVehiclePosition {
+  coordinate: number[];
+  timestamp: number;
+}
+
 interface LiveVehicle {
   routeId: string;
-  coordinate: number[];
+  position: LiveVehiclePosition;
+  history: LiveVehiclePosition[];
 }
 
 function convertFromProtobuf(
@@ -18,7 +24,11 @@ function convertFromProtobuf(
 
   return {
     routeId,
-    coordinate: [longitude, latitude],
+    position: {
+      coordinate: [longitude, latitude],
+      timestamp: 0,
+    },
+    history: [],
   };
 }
 

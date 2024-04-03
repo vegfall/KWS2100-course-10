@@ -14,11 +14,11 @@ const map = new Map({
 });
 
 export function Application() {
-  const vehicleLayer = useVehicleLayer();
+  const { vehicleLayer, vehicleTrailLayer } = useVehicleLayer();
 
   const layers = useMemo(() => {
-    return [backgroundLayer, vehicleLayer];
-  }, [vehicleLayer]);
+    return [backgroundLayer, vehicleTrailLayer, vehicleLayer];
+  }, [vehicleLayer, vehicleTrailLayer]);
 
   useEffect(() => {
     map.setLayers(layers);
