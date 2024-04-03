@@ -2,13 +2,21 @@
   "name": "course",
   "version": "1.0.0",
   "devDependencies": {
+    "@types/react": "^18.2.74",
+    "@types/react-dom": "^18.2.23",
+    "husky": "^9.0.11",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.3",
     "vite": "^5.2.7"
-  },
-  "scripts": {
-    "dev": "vite"
   },
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "prepare": "husky",
+    "test": "prettier --check . && tsc --noEmit",
+    "prettier:update": "prettier --write ."
   }
 }
