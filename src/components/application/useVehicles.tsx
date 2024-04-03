@@ -7,6 +7,7 @@ interface LiveVehiclePosition {
 }
 
 interface LiveVehicle {
+  id: string;
   routeId: string;
   position: LiveVehiclePosition;
   history: LiveVehiclePosition[];
@@ -16,24 +17,30 @@ function convertFromProtobuf(
   vehicle: VehiclePosition | undefined,
 ): LiveVehicle | undefined {
   if (!vehicle) return;
-  const { position, trip } = vehicle;
-  if (!position || !trip) return;
+  const { position, trip, vehicle: protoVehicle } = vehicle;
+  if (!position || !trip || !protoVehicle) return;
+  const { id } = protoVehicle;
   const { longitude, latitude } = position;
   const { routeId } = trip;
-  if (!routeId) return;
+  if (!routeId || !id) return;
+
+  const p = {
+    coordinate: [longitude, latitude],
+    timestamp: 0,
+  };
 
   return {
+    id,
     routeId,
-    position: {
-      coordinate: [longitude, latitude],
-      timestamp: 0,
-    },
-    history: [],
+    position: p,
+    history: [p],
   };
 }
 
 export function useVehicles() {
-  const [vehicles, setVehicles] = useState<LiveVehicle[]>([]);
+  const [vehicleTable, setVehicleTable] = useState<Record<string, LiveVehicle>>(
+    {},
+  );
 
   async function fetchVehiclePosition() {
     const res = await fetch(
@@ -56,7 +63,24 @@ export function useVehicles() {
       if (v) vehicles.push(v);
     }
 
-    setVehicles(vehicles);
+    setVehicleTable((old) => {
+      const updated = { ...old };
+
+      for (const v of vehicles) {
+        const oldVehicle = updated[v.id];
+        if (oldVehicle) {
+          updated[v.id] = {
+            ...oldVehicle,
+            position: v.position,
+            history: [...oldVehicle.history, v.position],
+          };
+        } else {
+          updated[v.id] = v;
+        }
+      }
+
+      return updated;
+    });
   }
 
   useEffect(() => {
@@ -65,5 +89,5 @@ export function useVehicles() {
     return () => clearInterval(intervalId);
   }, []);
 
-  return vehicles;
+  return Object.values(vehicleTable);
 }

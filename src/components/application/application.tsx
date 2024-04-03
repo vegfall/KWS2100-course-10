@@ -16,9 +16,10 @@ const map = new Map({
 export function Application() {
   const { vehicleLayer, vehicleTrailLayer } = useVehicleLayer();
 
-  const layers = useMemo(() => {
-    return [backgroundLayer, vehicleTrailLayer, vehicleLayer];
-  }, [vehicleLayer, vehicleTrailLayer]);
+  const layers = useMemo(
+    () => [backgroundLayer, vehicleTrailLayer, vehicleLayer],
+    [vehicleLayer, vehicleTrailLayer],
+  );
 
   useEffect(() => {
     map.setLayers(layers);
