@@ -12,13 +12,15 @@
   "dependencies": {
     "ol": "^9.1.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "ts-proto": "^1.171.0"
   },
   "scripts": {
     "dev": "vite",
     "prepare": "husky",
     "test": "prettier --check . && tsc --noEmit",
     "prettier:update": "prettier --write .",
-    "build": "npm test && vite build"
+    "build": "npm test && vite build",
+    "generate": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto.cmd --ts_proto_out=generated/ --ts_proto_opt=esModuleInterop=true ./gtfs-realtime.proto"
   }
 }
